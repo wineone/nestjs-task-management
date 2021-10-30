@@ -16,21 +16,22 @@ export class AuthService {
   ) {}
 
   signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+    console.log(authCredentialsDto);
     return this.usersRepository.createUser(authCredentialsDto);
   }
 
   async signIn(
     authCredetialsDto: AuthCredentialsDto,
-  ): Promise<{ acessToken: string }> {
+  ): Promise<{ accessToken: string }> {
     const { username, password } = authCredetialsDto;
     const user: User = await this.usersRepository.findOne({ username });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload: JwtPayload = { username };
 
-      const acessToken = this.jwtService.sign(payload);
+      const accessToken = this.jwtService.sign(payload);
 
-      return { acessToken };
+      return { accessToken };
     } else {
       throw new UnauthorizedException('check your credentials.');
     }
